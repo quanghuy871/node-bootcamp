@@ -24,7 +24,7 @@ const server = http.createServer((req, res) => {
     const output = tempReplace(tempProduct, product);
     res.end(output);
 
-  } else if (pathname === '/api') {
+  } else if (pathname === '/controllers') {
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.end(typeof data);
 

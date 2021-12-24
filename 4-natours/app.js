@@ -1,12 +1,19 @@
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
-const port = 3000;
 
 app.use(express.json());
 
-const toursApi = require(`${__dirname}/api/tours`);
-app.use('/api', toursApi);
-
-app.listen(port, () => {
-  console.log(`app running on port ${port}`);
+//Custom middleware
+app.use((req, res, next) => {
+  req.time = new Date().toISOString();
+  next();
 });
+
+const tourRoute = require(`${__dirname}/routes/tourRoutes`);
+const userRoute = require(`${__dirname}/routes/userRoutes`);
+
+app.use('/api/v1', tourRoute);
+app.use('/api/v1', userRoute);
+
+module.exports = app;
