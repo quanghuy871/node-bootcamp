@@ -1,36 +1,11 @@
 const fs = require('fs');
 const tours = JSON.parse(fs.readFileSync(`./dev-data/data/tours-simple.json`, 'utf-8'));
+const Tour = require('./../models/tourModel');
 
-const isEmpty = (obj) => {
-  for (let prop in obj) {
-    if (obj.hasOwnProperty(prop))
-      return false;
-  }
-  return true;
-};
+exports.getAllTours = async (req, res) => {
+  const all = await Tour.find();
+  console.log(all);
 
-exports.checkValidId = (req, res, next) => {
-  if (req.params.id * 1 < tours.length) {
-    res.status(200).json({
-      status: 'success',
-      message: 'Updated!!!',
-    });
-  } else {
-    return res.status(404).send('Not Found');
-  }
-  next();
-};
-
-exports.checkBody = (req, res, next) => {
-  if (isEmpty(req.body)) {
-    return res.status(404).json({
-      message: 'Bad request',
-    });
-  }
-  next();
-};
-
-exports.getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
     time: req.time,
