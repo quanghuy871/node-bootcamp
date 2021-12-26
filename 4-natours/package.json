@@ -2,9 +2,11 @@
   "name": "natours",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "import:data": "node dev-data/data/import-dev-data.js --import",
+    "delete:data": "node dev-data/data/import-dev-data.js --delete"
   },
   "author": "Harry",
   "license": "ISC",
