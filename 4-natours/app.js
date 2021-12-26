@@ -10,6 +10,10 @@ app.use((req, res, next) => {
   next();
 });
 
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
+
 const tourRoute = require(`${__dirname}/routes/tourRoutes`);
 const userRoute = require(`${__dirname}/routes/userRoutes`);
 

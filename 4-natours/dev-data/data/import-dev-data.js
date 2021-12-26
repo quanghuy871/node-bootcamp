@@ -1,12 +1,12 @@
 const dotenv = require('dotenv');
-const fs = require('fs');
-const mongoose = require('mongoose');
 dotenv.config({path: './config.env'});
-
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'));
+const fs = require('fs');
 const Tour = require('./../../models/tourModel');
-
+const mongoose = require('mongoose');
 const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
+
+// READ JSON FILE
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'));
 
 // CONNECT TO DATABASE USING MONGOOSE
 mongoose.connect(DB, {
@@ -25,6 +25,7 @@ const importData = async () => {
   } catch (err) {
     console.log(err);
   }
+  process.exit();
 };
 
 // DELETE ALL DATA ON DATABASE
@@ -35,6 +36,7 @@ const deleteData = async () => {
   } catch (err) {
     console.log(err);
   }
+  process.exit();
 };
 
 if (process.argv[2] === '--import') {
