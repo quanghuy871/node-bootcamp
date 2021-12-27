@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'development') {
 const tourRoute = require(`${__dirname}/routes/tourRoutes`);
 const userRoute = require(`${__dirname}/routes/userRoutes`);
 
-app.use('/api/v1', tourRoute);
-app.use('/api/v1', userRoute);
+app.use('/api/v1/tours', tourRoute);
+app.use('/api/v1/tours', userRoute);
 
 module.exports = app;
