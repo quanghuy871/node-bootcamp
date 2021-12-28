@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon server.js",
     "import:data": "node dev-data/data/import-dev-data.js --import",
-    "delete:data": "node dev-data/data/import-dev-data.js --delete"
+    "delete:data": "node dev-data/data/import-dev-data.js --delete",
+    "debug": "ndb server.js"
   },
   "author": "Harry",
   "license": "ISC",
@@ -14,9 +15,12 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
     "mongoose": "^5.5.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "slugify": "^1.6.4",
+    "validator": "^13.7.0"
   },
   "devDependencies": {
+    "ndb": "^1.1.5",
     "nodemon": "^2.0.15"
   }
 }

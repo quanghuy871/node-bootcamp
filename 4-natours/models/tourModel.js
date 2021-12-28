@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
+const slugify = require('slugify');
+const validator = require('validator');
 
 const tourSchema = new Schema({
   name: {
@@ -9,6 +11,7 @@ const tourSchema = new Schema({
     trim: true,
     maxlength: [40, 'A tour name must have less or equal then 40 characters'],
     minlength: [10, 'A tour name must have more or equal then 10 characters'],
+    // validate: [validator.isAlpha, 'The name must contain characters'],
   },
   slug: String,
   duration: {
@@ -41,6 +44,16 @@ const tourSchema = new Schema({
     type: Number,
     required: [true, 'A tour must have a price'],
   },
+  priceDiscount: {
+    type: Number,
+    // this only point to the current doc on NEW document creation
+    validate: {
+      validator: function(val) {
+        return val < this.price;
+      },
+      message: 'The discount must be higher than the price',
+    },
+  },
   summary: {
     type: String,
     trim: true,
@@ -61,6 +74,25 @@ const tourSchema = new Schema({
     select: false,
   },
   startDates: [Date],
+  secretTour: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+// "this" is the current process document and this function will run before save() - save to the DB
+tourSchema.pre('save', function(next) {
+  this.slug = slugify(this.name, {
+    lower: true,
+  });
+  next();
+});
+
+// Query middleware
+// "this" is the current query
+tourSchema.pre('find', function(next) {
+  this.find({secretTour: {$ne: true}});
+  next();
 });
 
 const Tour = mongoose.model('Tour', tourSchema);
