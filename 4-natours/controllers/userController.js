@@ -1,14 +1,18 @@
 const fs = require('fs');
 const users = JSON.parse(fs.readFileSync(`./dev-data/data/users.json`, 'utf-8'));
+const Users = require('./../models/userModel');
+const catchAsync = require('./../utils/catchAsync');
 
-exports.getAllUsers = (req, res) => {
+exports.getAllUsers = catchAsync(async (req, res) => {
+  const users = await Users.find();
+
   res.status(200).send({
     message: 'success',
     data: {
       users,
     },
   });
-};
+});
 
 exports.createUser = (req, res) => {
   const newId = users[users.length - 1].id + 1;

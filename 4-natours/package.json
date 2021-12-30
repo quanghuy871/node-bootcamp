@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev:Dev": "NODE_ENV=development nodemon server.js",
+    "dev:Prod": "NODE_ENV=production nodemon server.js",
     "import:data": "node dev-data/data/import-dev-data.js --import",
     "delete:data": "node dev-data/data/import-dev-data.js --delete",
     "debug": "ndb server.js"
@@ -12,8 +13,10 @@
   "author": "Harry",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.5.2",
     "morgan": "^1.10.0",
     "slugify": "^1.6.4",
