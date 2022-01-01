@@ -3,7 +3,13 @@ const router = express.Router();
 const controllers = require('./../controllers/tourController');
 const authControllers = require('./../controllers/authController');
 
-router.route('/').get(authControllers.protect, controllers.getAllTours).post(controllers.createTour);
-router.route('/:id').get(controllers.getTour).patch(controllers.updateTour).delete(controllers.deleteTour);
+router.route('/')
+.get(authControllers.protect, controllers.getAllTours)
+.post(controllers.createTour);
+
+router.route('/:id')
+.get(controllers.getTour)
+.patch(controllers.updateTour)
+.delete(authControllers.protect, authControllers.restrictTo(['admin', 'lead-guide']), controllers.deleteTour);
 
 module.exports = router;

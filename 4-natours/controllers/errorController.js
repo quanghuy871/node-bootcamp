@@ -9,7 +9,7 @@ const handleCastError = (err) => {
 
 // Handle duplicate fields Error
 const handleDuplicateFieldsError = (err) => {
-  const message = `Duplicate name: ${err.keyValue.name}`;
+  const message = `Duplicate name: ${err.keyValue.email}`;
 
   return new AppError(message, 400);
 };
@@ -19,6 +19,12 @@ const handleValidationError = (err) => {
   const message = Object.values(err.errors).map(el => el.message);
 
   return new AppError(message.join('. '), 400);
+};
+
+const handleJWTError = (err) => {
+  const message = `Internal Server Error`;
+
+  return new AppError(message, 500);
 };
 
 const sendErrorDev = (err, res) => {
@@ -52,10 +58,13 @@ module.exports = (err, req, res, next) => {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = {...err};
+    error.message = err.message;
 
     if (error.name === 'CastError') error = handleCastError(error);
     if (error.code === 11000) error = handleDuplicateFieldsError(error);
-    if (error.name === 'validationError') error = HandleValidationError(error);
+    if (error.name === 'validationError') error = handleValidationError(error);
+    if (error.name === 'JsonWebTokenError') error = handleJWTError(error);
+    if (error.name === 'TokenExpiredError') error = handleJWTError(error);
 
     sendErrorProd(error, res);
   }

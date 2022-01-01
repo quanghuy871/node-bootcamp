@@ -16,6 +16,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
+    role: req.body.role,
   });
 
   const token = signToken(newUser._id);
@@ -36,7 +37,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   const user = await User.findOne({email}).select('+password');
 
-  if (!user || !(await user.correctPassword(password, user.password))) {
+  if (!user || !await user.correctPassword(password, user.password)) {
     return next(new AppError('Incorrect email or password', 401));
   }
 
@@ -56,7 +57,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   if (!token) {
-    return next(new AppError('You are not logged in!'), 401);
+    return next(new AppError('You are not logged in!', 401));
   }
 
   // 2. Verification token
@@ -65,7 +66,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   // 3. Check if user still exits
   const currentUser = await User.findById(decode.id);
   if (!currentUser) {
-    return next(new AppError('The user belongs to this token no longer exist'), 401);
+    return next(new AppError('The user belongs to this token no longer exist', 401));
   }
 
   // 4. Check for the token changed after the token was issue
@@ -76,3 +77,13 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+exports.restrictTo = (roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError('You don\'t have permission to perform this action', 403));
+    }
+
+    next();
+  };
+};

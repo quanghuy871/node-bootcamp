@@ -29,7 +29,11 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
   //     throw new Error('This page is not exist');
   //   }
   // }
-  const features = new APIFeatures(Tour.find(), req.query).filter().sort().fields().pagination();
+  const features = new APIFeatures(Tour.find(), req.query)
+  .filter()
+  .sort()
+  .fields()
+  .pagination();
   const tours = await features.query;
 
   res.status(200).json({
@@ -82,16 +86,13 @@ exports.updateTour = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.remove({_id: req.params.id});
-  const tours = await Tour.find();
+  const tour = await Tour.deleteOne({_id: req.params.id});
 
   if (!tour) {
     return next(new AppError('Tour Not Found', 404));
   }
 
   res.status(204).json({
-    data: {
-      tours,
-    },
+    status: 'Success',
   });
 });
