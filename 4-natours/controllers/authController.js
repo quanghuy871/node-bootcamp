@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
+const email = require('./../utils/email');
 
 const signToken = id => {
   return jwt.sign({id}, process.env.JWT_SECRET, {
@@ -87,3 +88,42 @@ exports.restrictTo = (roles) => {
     next();
   };
 };
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  // 1. Get user based on Posted email
+  const user = await User.findOne({email: req.body.email});
+  if (!user) {
+    return next(new AppError('There is no user with this email', 400));
+  }
+
+  // 2. Generate the ramdom reset token
+  const resetToken = user.resetPasswordToken();
+  await user.save({validateBeforeSave: false});
+
+  // 3. Send it to user's email
+  const resetURL = `${req.protocol}//${req.get('host')}/api/v1/user/resetPassword/${resetToken}`;
+  const message = `Forgot your password? access this URL to reset your password: ${resetURL}`;
+
+  try {
+    await email({
+      email: user.email,
+      subject: 'Valid for 10 mins',
+      message,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Please check your email',
+    });
+  } catch (err) {
+    this.passwordResetToken = undefined;
+    this.passwordResetExpires = undefined;
+    await user.save({validateBeforeSave: false});
+
+    return next(new AppError('Your token has been expired', 500));
+  }
+});
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+
+});
