@@ -22,7 +22,7 @@ const handleValidationError = (err) => {
 };
 
 const handleJWTError = (err) => {
-  const message = `Internal Server Error`;
+  const message = `Internal Server Error or missing JWT`;
 
   return new AppError(message, 500);
 };
@@ -62,7 +62,7 @@ module.exports = (err, req, res, next) => {
 
     if (error.name === 'CastError') error = handleCastError(error);
     if (error.code === 11000) error = handleDuplicateFieldsError(error);
-    if (error.name === 'validationError') error = handleValidationError(error);
+    if (error.name === 'ValidationError') error = handleValidationError(error);
     if (error.name === 'JsonWebTokenError') error = handleJWTError(error);
     if (error.name === 'TokenExpiredError') error = handleJWTError(error);
 
