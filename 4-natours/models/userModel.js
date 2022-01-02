@@ -52,6 +52,13 @@ const userSchema = new Schema({
   },
 });
 
+userSchema.pre('save', function(next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 12);
@@ -66,7 +73,7 @@ userSchema.methods.correctPassword = async function(candidatePassword, userPassw
 userSchema.methods.changedPasswordAfter = function(JWTTimestamps) {
   if (this.passwordChangedAt) {
     const passwordChangedAtTime = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
-    return passwordChangedAtTime < JWTTimestamps;
+    return JWTTimestamps < passwordChangedAtTime;
   }
 
   return false;
