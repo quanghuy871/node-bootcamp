@@ -52,6 +52,12 @@ const userSchema = new Schema({
   },
 });
 
+userSchema.pre(/^find/, function(next) {
+  // "this" point to the current query documents
+  this.find({active: {$ne: false}});
+  next();
+});
+
 userSchema.pre('save', function(next) {
   if (!this.isModified('password') || this.isNew) return next();
 

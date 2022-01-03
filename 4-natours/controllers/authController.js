@@ -11,8 +11,16 @@ const signToken = id => {
   });
 };
 
-const sendJWT = (user, statusCode, req, res) => {
+const sendJWT = (user, statusCode, res) => {
   const token = signToken(user._id);
+
+  res.cookie('jwt', token, {
+    expires: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
+    secure: false,
+    httpOnly: true,
+  });
+
+  user.password = undefined;
 
   res.status(statusCode).json({
     status: 'success',
@@ -32,9 +40,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     role: req.body.role,
   });
 
-  const token = signToken(newUser._id);
-
-  sendJWT(newUser, 201, req, res);
+  sendJWT(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -48,7 +54,7 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password', 401));
   }
 
-  sendJWT(user, 200, req, res);
+  sendJWT(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -144,7 +150,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   // 3. Update changePasswordAt property for the user
   // 4. log the user in, send JWT
-  sendJWT(user, 200, req, res);
+  sendJWT(user, 200, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -162,5 +168,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   // 4. Log user in, send JWT
-  sendJWT(user, 200, req, res);
+  sendJWT(user, 200, res);
 });

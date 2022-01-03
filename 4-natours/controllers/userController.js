@@ -2,12 +2,25 @@ const fs = require('fs');
 const users = JSON.parse(fs.readFileSync(`./dev-data/data/users.json`, 'utf-8'));
 const Users = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
+
+const filterObj = (filter, ...elements) => {
+  const newObj = {};
+  Object.keys(filter).forEach(el => {
+    if (elements.includes(el)) {
+      newObj[el] = filter[el];
+    }
+  });
+
+  return newObj;
+};
 
 exports.getAllUsers = catchAsync(async (req, res) => {
   const users = await Users.find();
 
   res.status(200).send({
     message: 'success',
+    results: users.length,
     data: {
       users,
     },
@@ -28,6 +41,35 @@ exports.createUser = (req, res) => {
     });
   });
 };
+
+exports.updateMe = catchAsync(async (req, res, next) => {
+  // 1. Create error if user update password
+  if (req.body.password || req.body.passwordConfirm) {
+    console.log(req.body);
+    return next(new AppError('This route is not for password update', 400));
+  }
+  // 2. update user document
+  const updatedUser = await Users.findByIdAndUpdate(req.user.id, filterObj(req.body, 'name', 'email'), {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      user: updatedUser,
+    },
+  });
+});
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await Users.findByIdAndUpdate(req.user.id, {active: false});
+
+  res.status(204).json({
+    status: 'Success',
+    message: 'Your account has switched to INACTIVE',
+  });
+});
 
 exports.getUser = (req, res) => {
   console.log(req.params);
