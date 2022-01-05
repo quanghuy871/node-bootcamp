@@ -29,11 +29,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
   //     throw new Error('This page is not exist');
   //   }
   // }
-  const features = new APIFeatures(Tour.find(), req.query)
-  .filter()
-  .sort()
-  .fields()
-  .pagination();
+  const features = new APIFeatures(Tour.find(), req.query).filter().sort().fields().pagination();
   const tours = await features.query;
 
   res.status(200).json({
@@ -56,7 +52,10 @@ exports.createTour = catchAsync(async (req, res, next) => {
 });
 
 exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id);
+  const tour = await Tour.findById(req.params.id).populate({
+    path: 'guides',
+    select: '-__v',
+  });
 
   if (!tour) {
     return next(new AppError('Tour Not Found', 404));

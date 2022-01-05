@@ -4,7 +4,7 @@ const controllers = require('./../controllers/tourController');
 const authControllers = require('./../controllers/authController');
 
 router.route('/')
-.get(authControllers.protect, controllers.getAllTours)
+.get(controllers.getAllTours)
 .post(controllers.createTour);
 
 router.route('/:id')

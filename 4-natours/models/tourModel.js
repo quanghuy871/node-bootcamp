@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const {Schema} = mongoose;
 const slugify = require('slugify');
 const validator = require('validator');
-const Users = require('./userModel');
+// const Users = require('./userModel');
 
 const tourSchema = new Schema({
   name: {
@@ -103,7 +103,12 @@ const tourSchema = new Schema({
       day: Number,
     },
   ],
-  guides: Array,
+  guides: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+    },
+  ],
 });
 
 // "this" is the current process document and this function will run before save() - save to the DB
@@ -114,10 +119,17 @@ tourSchema.pre('save', function(next) {
   next();
 });
 
-tourSchema.pre('save', async function(next) {
-  const guidePromise = this.guides.map(async id => await Users.findById(id));
-  this.guides = await Promise.all(guidePromise);
-  next();
+// tourSchema.pre('save', async function(next) {
+//   const guidePromise = this.guides.map(async id => await Users.findById(id));
+//   this.guides = await Promise.all(guidePromise);
+//   next();
+// });
+
+tourSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v',
+  });
 });
 
 // Query middleware
