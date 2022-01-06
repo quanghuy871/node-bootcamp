@@ -9,6 +9,7 @@ exports.getAllReviews = catchAsync(async (req, res) => {
     status: 'Success',
     data: {
       reviews,
+
     },
   });
 });
