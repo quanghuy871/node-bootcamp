@@ -6,3 +6,4 @@ const authControllers = require('./../controllers/authController');
 router.route('/').get(reviewControllers.getAllReviews).post(reviewControllers.createReview);
 
 module.exports = router;
+
