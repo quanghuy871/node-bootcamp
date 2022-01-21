@@ -20,7 +20,6 @@ const reviewSchema = new Schema({
       type: mongoose.Schema.ObjectId,
       ref: 'Tour',
     },
-
   ],
   user: [
     {
