@@ -11,7 +11,6 @@ const reviewSchema = new Schema({
     min: 1,
     max: 5,
   },
-
   createdAt: {
     type: Date,
   },
@@ -27,6 +26,20 @@ const reviewSchema = new Schema({
       ref: 'User',
     },
   ],
+});
+
+reviewSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'tour',
+    select: 'name',
+  });
+
+  this.populate({
+    path: 'user',
+    select: 'name',
+  });
+
+  next();
 });
 
 const Review = mongoose.model('Review', reviewSchema);

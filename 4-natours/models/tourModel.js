@@ -130,6 +130,8 @@ tourSchema.pre(/^find/, function(next) {
     path: 'guides',
     select: '-__v',
   });
+
+  next();
 });
 
 // Query middleware

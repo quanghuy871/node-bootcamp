@@ -1,5 +1,3 @@
-const fs = require('fs');
-const users = JSON.parse(fs.readFileSync(`./dev-data/data/users.json`, 'utf-8'));
 const Users = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
