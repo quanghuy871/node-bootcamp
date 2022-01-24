@@ -28,6 +28,12 @@ const reviewSchema = new Schema({
   ],
 });
 
+reviewSchema.pre('save', function(next) {
+  this.createdAt = new Date();
+
+  next();
+});
+
 reviewSchema.pre(/^find/, function(next) {
   this.populate({
     path: 'user',

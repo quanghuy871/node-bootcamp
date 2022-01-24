@@ -129,6 +129,8 @@ tourSchema.pre('save', function(next) {
 //   this.guides = await Promise.all(guidePromise);
 //   next();
 // });
+
+// Virtual populate - need to populate() when use, otherwise will be NULL
 tourSchema.virtual('reviews', {
   ref: 'Review',
   foreignField: 'tour',
