@@ -1,7 +1,7 @@
 const Users = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
-const deleteUser = require('./handlerFactory');
+const factory = require('./handlerFactory');
 
 const filterObj = (filter, ...elements) => {
   const newObj = {};
@@ -70,29 +70,8 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getUser = (req, res) => {
-  console.log(req.params);
-  if (req.params.id * 1 < users.length) {
-    const user = users.find(el => el.id === req.params.id * 1);
-    res.status(200).json({
-      data: {
-        user,
-      },
-    });
-  } else {
-    res.status(404).send('Not Found');
-  }
-};
+exports.getUser = factory.getOne(Users);
 
-exports.updateUser = (req, res) => {
-  if (req.params.id * 1 < users.length) {
-    res.status(200).json({
-      status: 'success',
-      message: 'Updated!!!',
-    });
-  } else {
-    res.status(404).send('Not Found');
-  }
-};
+exports.updateUser = factory.updateOne(Users);
 
-exports.deleteUser = deleteUser.deleteOne(Users);
+exports.deleteUser = factory.deleteOne(Users);

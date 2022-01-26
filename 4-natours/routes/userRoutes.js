@@ -12,7 +12,13 @@ router.patch('/updateMyPassword', authControllers.protect, authControllers.updat
 router.patch('/updateMe', authControllers.protect, controllers.updateMe);
 router.patch('/deleteMe', authControllers.protect, controllers.deleteMe);
 
-router.route('/').get(controllers.getAllUsers).post(controllers.createUser);
-router.route('/:id').get(controllers.getUser).patch(controllers.updateUser).delete(controllers.deleteUser);
+router.route('/')
+.get(controllers.getAllUsers)
+.post(controllers.createUser);
+
+router.route('/:id')
+.get(controllers.getUser)
+.patch(authControllers.protect, authControllers.restrictTo(['user']), controllers.updateUser)
+.delete(controllers.deleteUser);
 
 module.exports = router;
