@@ -10,6 +10,7 @@ router.route('/')
 .get(controllers.getAllTours)
 .post(controllers.createTour);
 
+
 router.route('/:id')
 .get(controllers.getTour)
 .patch(controllers.updateTour)
