@@ -19,5 +19,4 @@ router.route('/:id')
 // router.route('/:tourId/reviews')
 // .post(authControllers.protect, authControllers.restrictTo(['user']), reviewController.createReview);
 
-
 module.exports = router;
