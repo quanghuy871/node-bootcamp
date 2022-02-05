@@ -64,7 +64,6 @@ exports.getOne = (Model, popOptions) => catchAsync(async (req, res, next) => {
     return next(new AppError('Tour Not Found', 404));
   }
 
-
   res.status(200).json({
     data: {
       data: doc,
