@@ -41,7 +41,6 @@ exports.createUser = (req, res) => {
   });
 };
 
-
 exports.getMe = catchAsync(async (req, res, next) => {
   req.params.id = req.user.id;
 
