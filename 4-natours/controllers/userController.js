@@ -48,6 +48,7 @@ exports.getMe = catchAsync(async (req, res, next) => {
   next();
 });
 
+
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1. Create error if user update password
   if (req.body.password || req.body.passwordConfirm) {
