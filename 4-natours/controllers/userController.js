@@ -14,6 +14,7 @@ const filterObj = (filter, ...elements) => {
   return newObj;
 };
 
+
 exports.getAllUsers = catchAsync(async (req, res) => {
   const users = await Users.find();
 
