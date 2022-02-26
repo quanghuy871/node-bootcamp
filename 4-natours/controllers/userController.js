@@ -26,7 +26,6 @@ exports.getAllUsers = catchAsync(async (req, res) => {
   });
 });
 
-
 exports.createUser = (req, res) => {
   const newId = users[users.length - 1].id + 1;
   const newUser = {id: newId, ...req.body};
