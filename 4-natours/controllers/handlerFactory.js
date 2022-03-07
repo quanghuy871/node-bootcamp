@@ -1,6 +1,7 @@
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/AppError');
 const APIFeatures = require('./../utils/apiFeatures');
+const path = require('path');
 
 exports.getAll = Model => catchAsync(async (req, res, next) => {
   // 3. SORT
